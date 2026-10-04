@@ -107,6 +107,32 @@ $$('.faq__item').forEach((item) => {
 const sel = $('#course');
 $$('[data-course]').forEach((a) => a.addEventListener('click', () => { if (sel) sel.value = a.dataset.course; }));
 
+// ---- 7b. WhatsApp: авто-подстановка текста сообщения -------------------------
+// Кнопки #waFormBtn и #waFloat ведут на wa.me/номер с готовым текстом:
+//   "Здравствуйте! Хочу на бесплатный пробный урок DreamBuilders на программу «...»"
+// Программа берётся из <select id="course">, имя — из поля, если заполнено.
+const waFormBtn = $('#waFormBtn'), waFloat = $('#waFloat');
+const buildWaMessage = () => {
+  const course = (sel && sel.value) ? sel.value : 'Подготовка к IELTS';
+  // Опрашиваем поле имени напрямую — nameEl объявляется ниже (избегаем TDZ)
+  const name = ($('#name')?.value || '').trim();
+  let msg = `Здравствуйте! Хочу на бесплатный пробный урок DreamBuilders на программу «${course}»`;
+  if (name) msg += `. Меня зовут ${name}`;
+  return msg + '.';
+};
+// Собираем wa.me-ссылку и обновляем href обеих кнопок
+const updateWaLinks = () => {
+  const url = 'https://wa.me/77071215457?text=' + encodeURIComponent(buildWaMessage());
+  if (waFormBtn) waFormBtn.href = url;
+  if (waFloat) waFloat.href = url;
+};
+// Обновляем при смене программы/имени и перед переходом (на всякий случай)
+sel?.addEventListener('change', updateWaLinks);
+$('#name')?.addEventListener('input', updateWaLinks);
+waFormBtn?.addEventListener('click', updateWaLinks);
+waFloat?.addEventListener('click', updateWaLinks);
+updateWaLinks(); // стартовое состояние: программа по умолчанию — IELTS
+
 // ---- 8. Маска телефона (формат Казахстана) -------------------------------------
 // Приводит ввод к виду: +7 (XXX) XXX-XX-XX (итого 11 цифр, первая всегда 7).
 // "8" в начале автоматически заменяется на "7".
