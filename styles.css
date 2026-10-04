@@ -42,7 +42,7 @@
   --accent: #FF5722;
   --accent-dark: #e64a19;
   --text: #FFFFFF;
-  --muted: #A1A1AA;
+  --muted: #B0B0BD;
   --border: #333333;
   --font-d: 'Anton', Impact, sans-serif;
   --font-b: 'Inter', Arial, sans-serif;
@@ -327,7 +327,7 @@ ul, ol { list-style: none; }
   display: flex; flex-direction: column;
   transition: transform .22s, border-color .22s, box-shadow .22s;
 }
-.plan:hover { transform: translateY(-6px); box-shadow: 0 24px 50px rgba(0,0,0,.4); }
+.plan:hover { transform: translateY(-6px); }
 .plan--featured { border-color: var(--blue); }
 .plan__badge {
   position: absolute; top: -13px; left: 24px;
