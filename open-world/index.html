@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HORIZON VALLEY — Открытый мир 4×4 км</title>
+    <link rel="stylesheet" href="/src/styles.css" />
+  </head>
+  <body>
+    <div id="canvas-container"></div>
+
+    <!-- Forza Horizon Style Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+      <div class="loading-backdrop-glow"></div>
+      <div class="loading-card">
+        <div class="loading-badge">FORZA HORIZON INSPIRED • REALTIME PBR WEBGL2</div>
+        <h1 class="loading-title">HORIZON VALLEY</h1>
+        <p class="loading-subtitle">
+          Открытый мир <strong>4.0 × 4.0 км (16 км²)</strong> • Озёра, реки, леса, лесные тропы, равнины, виадуки и деревня Озёрная
+        </p>
+        <div class="loading-bar-track">
+          <div id="loading-bar-fill" class="loading-bar-fill"></div>
+        </div>
+        <div id="loading-status" class="loading-status">Инициализация ландшафта и дорожной сети 4×4 км...</div>
+      </div>
+    </div>
+
+    <div id="hud-root"></div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
