@@ -91,24 +91,39 @@ export class CarController {
       this.keys[e.code] = false;
     });
 
+    this.domElement.style.touchAction = 'none';
+    this._activePtrId = null;
+    this._lastPtrX = 0;
+    this._lastPtrY = 0;
+
     this.domElement.addEventListener('pointerdown', (e) => {
-      if (e.button === 0) {
+      if (this._activePtrId === null) {
+        this._activePtrId = e.pointerId;
+        this._lastPtrX = e.clientX;
+        this._lastPtrY = e.clientY;
         this.isPointerDragging = true;
       }
     });
-    window.addEventListener('pointerup', () => {
-      this.isPointerDragging = false;
-    });
+    const endPtr = (e) => {
+      if (e.pointerId === this._activePtrId) {
+        this._activePtrId = null;
+        this.isPointerDragging = false;
+      }
+    };
+    window.addEventListener('pointerup', endPtr);
+    window.addEventListener('pointercancel', endPtr);
     window.addEventListener('pointermove', (e) => {
-      if (!this.isPointerDragging) return;
-      const dx = e.movementX || 0;
-      const dy = e.movementY || 0;
+      if (!this.isPointerDragging || e.pointerId !== this._activePtrId) return;
+      const dx = (e.clientX - this._lastPtrX) || e.movementX || 0;
+      const dy = (e.clientY - this._lastPtrY) || e.movementY || 0;
+      this._lastPtrX = e.clientX;
+      this._lastPtrY = e.clientY;
       if (this.mode === 'drone') {
-        this.droneYaw -= dx * 0.0032;
-        this.dronePitch = Math.max(-1.42, Math.min(1.35, this.dronePitch - dy * 0.0032));
+        this.droneYaw -= dx * 0.0045;
+        this.dronePitch = Math.max(-1.42, Math.min(1.35, this.dronePitch - dy * 0.0045));
       } else if (this.mode === 'drive') {
-        this.orbitYawOffset -= dx * 0.0042;
-        this.orbitPitchOffset = Math.max(0.03, Math.min(0.65, this.orbitPitchOffset + dy * 0.003));
+        this.orbitYawOffset -= dx * 0.0052;
+        this.orbitPitchOffset = Math.max(0.03, Math.min(0.65, this.orbitPitchOffset + dy * 0.004));
         this.lastMouseTime = performance.now() * 0.001;
       }
     });

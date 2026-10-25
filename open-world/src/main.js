@@ -30,12 +30,14 @@ const nextPaint = () => new Promise((r) => requestAnimationFrame(() => setTimeou
 async function bootstrap() {
   const container = document.getElementById('canvas-container');
 
+  const isMobile = window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 860;
+
   // 1. WebGL2 Physically-Based Renderer with ACES Filmic Tone Mapping
   const renderer = new THREE.WebGLRenderer({
     antialias: true,
     powerPreference: 'high-performance',
   });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.5 : 2));
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.05;
@@ -46,10 +48,10 @@ async function bootstrap() {
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(56, window.innerWidth / window.innerHeight, 0.35, 14000);
 
-  // Multisampled Post-Processing Pipeline (MSAA 4x + Subtle Forza Horizon Sun/Neon Bloom!)
+  // Multisampled Post-Processing Pipeline (Mobile-safe render target!)
   const rt = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, {
-    type: THREE.HalfFloatType,
-    samples: 4,
+    type: isMobile ? THREE.UnsignedByteType : THREE.HalfFloatType,
+    samples: isMobile ? 0 : 4,
   });
   const composer = new EffectComposer(renderer, rt);
   const renderPass = new RenderPass(scene, camera);

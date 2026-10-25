@@ -584,8 +584,211 @@ html, body {
   border-radius: 10px;
 }
 
+/* Mobile Touch Controls (Shown on touch devices or screens <= 960px) */
+.fh-touch-layer {
+  display: none;
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 14px;
+  align-items: flex-end;
+  justify-content: space-between;
+  pointer-events: none;
+  z-index: 30;
+}
+
+.fh-touch-layer.hidden-mode {
+  display: none !important;
+}
+
+@media (pointer: coarse), (max-width: 960px) {
+  .fh-touch-layer {
+    display: flex;
+  }
+  .fh-controls-hint {
+    display: none;
+  }
+}
+
+.fh-touch-left,
+.fh-touch-right,
+.fh-touch-center-mini {
+  display: flex;
+  gap: 8px;
+  pointer-events: auto;
+  touch-action: none;
+}
+
+.fh-touch-right,
+.fh-touch-left.drone-dpad {
+  flex-direction: column;
+  align-items: center;
+}
+
+.fh-touch-subrow {
+  display: flex;
+  gap: 8px;
+}
+
+.fh-touch-btn {
+  touch-action: none;
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  background: rgba(15, 23, 42, 0.72);
+  backdrop-filter: blur(8px);
+  color: #ffffff;
+  font-weight: 900;
+  border-radius: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+}
+
+.fh-touch-btn.steer {
+  width: 66px;
+  height: 66px;
+  font-size: 24px;
+}
+
+.fh-touch-btn.gas {
+  width: 78px;
+  height: 70px;
+  font-size: 13px;
+  background: rgba(5, 217, 232, 0.32);
+  border-color: #05d9e8;
+}
+
+.fh-touch-btn.brake {
+  width: 72px;
+  height: 70px;
+  font-size: 11px;
+  background: rgba(255, 42, 109, 0.28);
+  border-color: #ff2a6d;
+}
+
+.fh-touch-btn.small {
+  min-width: 66px;
+  height: 44px;
+  padding: 0 10px;
+  font-size: 11px;
+  border-radius: 12px;
+}
+
+.fh-touch-btn.drift {
+  border-color: #ff9f1c;
+  color: #ffd166;
+}
+
+.fh-touch-btn.nitro {
+  border-color: #a855f7;
+  color: #e9d5ff;
+}
+
+.fh-touch-btn.pressed {
+  transform: scale(0.93);
+  background: #ff2a6d;
+  border-color: #ffffff;
+  color: #ffffff;
+}
+
+.fh-touch-center-mini {
+  flex-direction: column;
+  margin-bottom: 4px;
+}
+
+.fh-touch-mini {
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(15, 23, 42, 0.72);
+  color: #e2e8f0;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 6px 10px;
+  border-radius: 10px;
+}
+
 @media (max-width: 900px) {
-  .fh-controls-hint { display: none; }
-  .fh-map-dialog { grid-template-columns: 1fr; overflow-y: auto; }
-  .fh-minimap-wrap { width: 150px; height: 150px; }
+  .fh-brand-card {
+    display: none;
+  }
+  .fh-toolbar {
+    top: 8px;
+    left: 8px;
+    right: 8px;
+    align-items: stretch;
+    gap: 5px;
+  }
+  .fh-tool-row {
+    justify-content: center;
+    padding: 4px 6px;
+    gap: 4px;
+  }
+  .fh-paints-row {
+    display: none;
+  }
+  .fh-pill, .fh-chip {
+    padding: 5px 8px;
+    font-size: 11px;
+  }
+  .fh-minimap-wrap {
+    top: 96px;
+    bottom: auto;
+    left: 10px;
+    width: 106px;
+    height: 106px;
+    border-width: 2px;
+  }
+  #fh-minimap {
+    width: 100%;
+    height: 100%;
+  }
+  .fh-minimap-hint {
+    font-size: 8px;
+    bottom: -15px;
+  }
+  .fh-speedo {
+    top: 94px;
+    bottom: auto;
+    right: 10px;
+    width: 114px;
+    height: 114px;
+  }
+  .fh-speed-val {
+    font-size: 28px;
+  }
+  .fh-speed-unit {
+    font-size: 8px;
+    margin-bottom: 2px;
+  }
+  .fh-gear {
+    width: 18px;
+    height: 18px;
+    font-size: 10px;
+  }
+  .fh-surface, .fh-odo {
+    display: none;
+  }
+  .fh-district-banner {
+    top: auto;
+    bottom: 145px;
+    padding: 6px 16px;
+    width: max-content;
+    max-width: 90vw;
+  }
+  .fh-district-title {
+    font-size: 14px;
+  }
+  .fh-district-sub {
+    font-size: 10px;
+  }
+  .fh-map-dialog {
+    grid-template-columns: 1fr;
+    height: 94vh;
+    padding: 12px;
+    gap: 10px;
+    overflow-y: auto;
+  }
+  .fh-landmark-list {
+    max-height: 190px;
+  }
 }
