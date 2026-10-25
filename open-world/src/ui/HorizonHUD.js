@@ -240,6 +240,46 @@ export class HorizonHUD {
         </div>
       </div>
 
+      <!-- Mobile / Touch On-Screen Controls (Steering + Pedals + Drone Pad) -->
+      <div id="fh-touch-drive" class="fh-touch-layer">
+        <div class="fh-touch-left">
+          <button class="fh-touch-btn steer" data-key="KeyA">◀</button>
+          <button class="fh-touch-btn steer" data-key="KeyD">▶</button>
+        </div>
+        <div class="fh-touch-center-mini">
+          <button class="fh-touch-mini" id="btn-touch-cam">🎥 Камера</button>
+          <button class="fh-touch-mini" id="btn-touch-reset">🔄 Дорога</button>
+        </div>
+        <div class="fh-touch-right">
+          <div class="fh-touch-subrow">
+            <button class="fh-touch-btn small drift" data-key="Space">ДРИФТ</button>
+            <button class="fh-touch-btn small nitro" data-key="ShiftLeft">⚡ НИТРО</button>
+          </div>
+          <div class="fh-touch-subrow">
+            <button class="fh-touch-btn brake" data-key="KeyS">ТОРМОЗ</button>
+            <button class="fh-touch-btn gas" data-key="KeyW">ГАЗ</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="fh-touch-drone" class="fh-touch-layer hidden-mode">
+        <div class="fh-touch-left drone-dpad">
+          <button class="fh-touch-btn small" data-key="KeyW">▲</button>
+          <div class="fh-touch-subrow">
+            <button class="fh-touch-btn small" data-key="KeyA">◀</button>
+            <button class="fh-touch-btn small" data-key="KeyD">▶</button>
+          </div>
+          <button class="fh-touch-btn small" data-key="KeyS">▼</button>
+        </div>
+        <div class="fh-touch-right">
+          <button class="fh-touch-btn small nitro" data-key="ShiftLeft">⚡ ТУРБО</button>
+          <div class="fh-touch-subrow">
+            <button class="fh-touch-btn small" data-key="KeyQ">ВНИЗ</button>
+            <button class="fh-touch-btn small gas" data-key="KeyE">ВВЕРХ</button>
+          </div>
+        </div>
+      </div>
+
       <!-- Full-Screen 4x4 km Interactive World Map & Fast Travel Modal -->
       <div id="fh-map-modal" class="fh-map-modal hidden">
         <div class="fh-map-dialog">
@@ -291,6 +331,8 @@ export class HorizonHUD {
     this.elSpeedo = document.getElementById('fh-speedo');
     this.elHint = document.getElementById('fh-controls-hint');
     this.elMapModal = document.getElementById('fh-map-modal');
+    this.elTouchDrive = document.getElementById('fh-touch-drive');
+    this.elTouchDrone = document.getElementById('fh-touch-drone');
   }
 
   _bindEvents() {
@@ -363,6 +405,34 @@ export class HorizonHUD {
       this.toggleMap(false);
     });
 
+    // Multi-touch virtual pedals, steering & drone buttons for Mobile/Tablet!
+    document.querySelectorAll('[data-key]').forEach((btn) => {
+      const code = btn.dataset.key;
+      const press = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        this.car.keys[code] = true;
+        btn.classList.add('pressed');
+      };
+      const release = (e) => {
+        e.preventDefault();
+        this.car.keys[code] = false;
+        btn.classList.remove('pressed');
+      };
+      btn.addEventListener('pointerdown', press);
+      btn.addEventListener('pointerup', release);
+      btn.addEventListener('pointercancel', release);
+      btn.addEventListener('pointerleave', release);
+      btn.addEventListener('contextmenu', (e) => e.preventDefault());
+    });
+
+    document.getElementById('btn-touch-cam')?.addEventListener('click', () => {
+      this.car.chasePreset = (this.car.chasePreset + 1) % 3;
+    });
+    document.getElementById('btn-touch-reset')?.addEventListener('click', () => {
+      this.car.resetToNearestRoad();
+    });
+
     window.addEventListener('keydown', (e) => {
       if (e.code === 'KeyM') {
         this.toggleMap(!this.mapOpen);
@@ -381,6 +451,10 @@ export class HorizonHUD {
       b.classList.toggle('active', b.dataset.mode === mode);
     });
     this.elSpeedo.style.display = mode === 'drive' ? 'block' : 'none';
+    this.elTouchDrive?.classList.toggle('hidden-mode', mode !== 'drive');
+    this.elTouchDrone?.classList.toggle('hidden-mode', mode !== 'drone');
+    // Clear held touch keys when switching mode
+    for (const k of Object.keys(this.car.keys)) this.car.keys[k] = false;
     if (mode === 'drone') {
       this.elHint.innerHTML = `
         <span><b>WASD</b> Полёт по 4×4 км</span>
